@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial Planning Tool</title>
+    <title>Interactive Financial Planning Tool</title>
     <style>
         * {
             margin: 0;
@@ -21,100 +21,73 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
             padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
-        .input-section {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e0e0e0;
-        }
-
-        .results-section {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e0e0e0;
-        }
-
-        .section-title {
-            font-size: 1.4em;
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #4facfe;
+        .card h2 {
+            color: #2d3748;
+            margin-bottom: 25px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             margin-bottom: 20px;
         }
 
-        .input-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
+        .input-field {
+            display: flex;
+            flex-direction: column;
         }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: 600;
+        .input-field label {
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
 
-        input[type="number"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+        .input-field input {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
             font-size: 16px;
             transition: all 0.3s ease;
         }
 
-        input[type="number"]:focus {
+        .input-field input:focus {
             outline: none;
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .calculate-btn {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-top: 20px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -124,183 +97,204 @@
             box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
         }
 
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
         .result-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            border-radius: 15px;
             text-align: center;
         }
 
         .result-value {
-            font-size: 2em;
-            font-weight: bold;
+            font-size: 24px;
+            font-weight: 700;
             margin-bottom: 5px;
         }
 
         .result-label {
-            font-size: 0.9em;
+            font-size: 14px;
             opacity: 0.9;
         }
 
         .table-container {
-            background: white;
+            margin-top: 20px;
             border-radius: 15px;
             overflow: hidden;
-            margin-top: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
-        .projection-table {
+        table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .projection-table th {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        th {
+            background: linear-gradient(135deg, #48cae4, #0077b6);
             color: white;
             padding: 15px 10px;
             text-align: center;
             font-weight: 600;
+            font-size: 14px;
         }
 
-        .projection-table td {
+        td {
             padding: 12px 10px;
             text-align: center;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
         }
 
-        .projection-table tr:hover {
-            background: #f8f9fa;
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
         }
 
-        .positive {
-            color: #28a745;
-            font-weight: bold;
+        .status-sufficient {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-weight: 600;
         }
 
-        .negative {
-            color: #dc3545;
-            font-weight: bold;
-        }
-
-        .warning {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
+        .status-insufficient {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-weight: 600;
         }
 
         @media (max-width: 768px) {
-            .content {
+            .container {
                 grid-template-columns: 1fr;
             }
             
-            .input-row {
+            .input-group {
                 grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>💰 Financial Planning Tool</h1>
-            <p>Plan your retirement with confidence</p>
-        </div>
-
-        <div class="content">
-            <div class="input-section">
-                <h2 class="section-title">📊 Input Parameters</h2>
-                
-                <div class="input-group">
-                    <div class="input-row">
-                        <div>
-                            <label for="currentAge">Current Age</label>
-                            <input type="number" id="currentAge" value="35" min="18" max="100">
-                        </div>
-                        <div>
-                            <label for="retirementAge">Retirement Age</label>
-                            <input type="number" id="retirementAge" value="60" min="40" max="100">
-                        </div>
-                    </div>
-                    
-                    <div class="input-row">
-                        <div>
-                            <label for="currentCorpus">Current Corpus (₹)</label>
-                            <input type="number" id="currentCorpus" value="1000000" step="10000">
-                        </div>
-                        <div>
-                            <label for="monthlyInvestment">Monthly Investment (₹)</label>
-                            <input type="number" id="monthlyInvestment" value="25000" step="1000">
-                        </div>
-                    </div>
-                    
-                    <div class="input-row">
-                        <div>
-                            <label for="expectedReturn">Expected Return (%)</label>
-                            <input type="number" id="expectedReturn" value="12" step="0.1" min="0" max="30">
-                        </div>
-                        <div>
-                            <label for="inflationRate">Inflation Rate (%)</label>
-                            <input type="number" id="inflationRate" value="6" step="0.1" min="0" max="20">
-                        </div>
-                    </div>
-                    
-                    <div class="input-row">
-                        <div>
-                            <label for="monthlyExpenses">Current Monthly Expenses (₹)</label>
-                            <input type="number" id="monthlyExpenses" value="50000" step="1000">
-                        </div>
-                        <div>
-                            <label for="lifeExpectancy">Life Expectancy</label>
-                            <input type="number" id="lifeExpectancy" value="85" min="60" max="120">
-                        </div>
-                    </div>
+        <div class="card">
+            <h2>📊 Input Parameters</h2>
+            
+            <div class="input-group">
+                <div class="input-field">
+                    <label for="currentAge">Current Age</label>
+                    <input type="number" id="currentAge" value="31">
                 </div>
-
-                <button class="calculate-btn" onclick="calculateFinancialPlan()">
-                    🚀 Calculate Financial Plan
-                </button>
+                <div class="input-field">
+                    <label for="retirementAge">Retirement Age</label>
+                    <input type="number" id="retirementAge" value="58">
+                </div>
             </div>
 
-            <div class="results-section">
-                <h2 class="section-title">📈 Results</h2>
-                <div id="results"></div>
+            <div class="input-group">
+                <div class="input-field">
+                    <label for="currentCorpus">Current Corpus (₹)</label>
+                    <input type="number" id="currentCorpus" value="1000000">
+                </div>
+                <div class="input-field">
+                    <label for="monthlyInvestment">Monthly Investment (₹)</label>
+                    <input type="number" id="monthlyInvestment" value="25000">
+                </div>
             </div>
+
+            <div class="input-group">
+                <div class="input-field">
+                    <label for="expectedReturn">Expected Return (%)</label>
+                    <input type="number" id="expectedReturn" value="12" step="0.1">
+                </div>
+                <div class="input-field">
+                    <label for="inflationRate">Inflation Rate (%)</label>
+                    <input type="number" id="inflationRate" value="6" step="0.1">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-field">
+                    <label for="currentExpenses">Current Monthly Expenses (₹)</label>
+                    <input type="number" id="currentExpenses" value="50000">
+                </div>
+                <div class="input-field">
+                    <label for="lifeExpectancy">Life Expectancy</label>
+                    <input type="number" id="lifeExpectancy" value="85">
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculatePlan()">
+                🚀 Calculate Financial Plan
+            </button>
         </div>
 
-        <div class="table-container" id="projectionTable" style="display: none;">
-            <table class="projection-table">
-                <thead>
-                    <tr>
-                        <th>Age</th>
-                        <th>Corpus (₹)</th>
-                        <th>Annual Expenses (₹)</th>
-                        <th>Withdrawal (₹)</th>
-                        <th>Remaining (₹)</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="projectionBody">
-                </tbody>
-            </table>
+        <div class="card">
+            <h2>📈 Results</h2>
+            
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value" id="corpusAtRetirement">₹0</div>
+                    <div class="result-label">Corpus at Retirement</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="firstYearExpenses">₹0</div>
+                    <div class="result-label">First Year Expenses</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="firstMonthExpenses">₹0</div>
+                    <div class="result-label">First Month Expenses</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="safeWithdrawalRate">₹0</div>
+                    <div class="result-label">Safe Monthly Withdrawal (4%)</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="corpusWillLast">0 Years</div>
+                    <div class="result-label">Corpus Will Last</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="totalRetirementYears">0 Years</div>
+                    <div class="result-label">Total Retirement Years</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="projectionTable">
+                    <thead>
+                        <tr>
+                            <th>Age</th>
+                            <th>Corpus (₹)</th>
+                            <th>Annual Expenses (₹)</th>
+                            <th>Withdrawal (₹)</th>
+                            <th>Remaining (₹)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
         function formatCurrency(amount) {
-            return new Intl.NumberFormat('en-IN', {
-                style: 'currency',
-                currency: 'INR',
-                maximumFractionDigits: 0
-            }).format(amount);
+            return '₹' + amount.toLocaleString('en-IN');
         }
 
-        function calculateFinancialPlan() {
+        function calculatePlan() {
             // Get input values
             const currentAge = parseInt(document.getElementById('currentAge').value);
             const retirementAge = parseInt(document.getElementById('retirementAge').value);
@@ -308,138 +302,105 @@
             const monthlyInvestment = parseFloat(document.getElementById('monthlyInvestment').value);
             const expectedReturn = parseFloat(document.getElementById('expectedReturn').value) / 100;
             const inflationRate = parseFloat(document.getElementById('inflationRate').value) / 100;
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value);
+            const currentExpenses = parseFloat(document.getElementById('currentExpenses').value);
             const lifeExpectancy = parseInt(document.getElementById('lifeExpectancy').value);
 
-            // Calculate corpus at retirement
+            // Calculate years to retirement
             const yearsToRetirement = retirementAge - currentAge;
-            const monthsToRetirement = yearsToRetirement * 12;
-            const monthlyReturn = expectedReturn / 12;
-            
+            const totalRetirementYears = lifeExpectancy - retirementAge;
+
+            // Calculate corpus at retirement
             // Future value of current corpus
-            const futureCurrentCorpus = currentCorpus * Math.pow(1 + expectedReturn, yearsToRetirement);
+            const futureValueCurrentCorpus = currentCorpus * Math.pow(1 + expectedReturn, yearsToRetirement);
             
             // Future value of monthly investments (annuity)
-            const futureMonthlyInvestments = monthlyInvestment * 
-                ((Math.pow(1 + monthlyReturn, monthsToRetirement) - 1) / monthlyReturn);
-            
-            const totalCorpusAtRetirement = futureCurrentCorpus + futureMonthlyInvestments;
-            
-            // Calculate expenses at retirement (adjusted for inflation)
-            const expensesAtRetirement = monthlyExpenses * 12 * Math.pow(1 + inflationRate, yearsToRetirement);
-            
-            // Calculate how long corpus will last
-            const retirementYears = lifeExpectancy - retirementAge;
-            let remainingCorpus = totalCorpusAtRetirement;
+            const monthlyReturn = expectedReturn / 12;
+            const totalMonths = yearsToRetirement * 12;
+            const futureValueInvestments = monthlyInvestment * 
+                ((Math.pow(1 + monthlyReturn, totalMonths) - 1) / monthlyReturn);
+
+            const corpusAtRetirement = futureValueCurrentCorpus + futureValueInvestments;
+
+            // Calculate first year expenses at retirement (adjusted for inflation)
+            const firstYearExpenses = currentExpenses * 12 * Math.pow(1 + inflationRate, yearsToRetirement);
+            const firstMonthExpenses = firstYearExpenses / 12;
+
+            // Calculate safe withdrawal rate (4% rule - monthly)
+            const safeWithdrawalRate = (corpusAtRetirement * 0.04) / 12;
+
+            // Update results display
+            document.getElementById('corpusAtRetirement').textContent = formatCurrency(Math.round(corpusAtRetirement));
+            document.getElementById('firstYearExpenses').textContent = formatCurrency(Math.round(firstYearExpenses));
+            document.getElementById('firstMonthExpenses').textContent = formatCurrency(Math.round(firstMonthExpenses));
+            document.getElementById('safeWithdrawalRate').textContent = formatCurrency(Math.round(safeWithdrawalRate));
+            document.getElementById('totalRetirementYears').textContent = totalRetirementYears + ' Years';
+
+            // Calculate year-by-year projection
+            let remainingCorpus = corpusAtRetirement;
+            let currentAnnualExpenses = firstYearExpenses;
             let yearsCorpusLasts = 0;
-            let projectionData = [];
-            
-            for (let year = 0; year < retirementYears; year++) {
-                const currentAnnualExpenses = expensesAtRetirement * Math.pow(1 + inflationRate, year);
+
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            for (let year = 0; year < totalRetirementYears; year++) {
                 const age = retirementAge + year;
                 
-                if (remainingCorpus > 0) {
-                    // Corpus grows at expected return rate
-                    remainingCorpus = remainingCorpus * (1 + expectedReturn);
+                // Corpus at beginning of year (before withdrawal)
+                const corpusBeforeWithdrawal = remainingCorpus;
+                
+                // Annual expenses for this year
+                const annualExpenses = currentAnnualExpenses;
+                
+                // Check if corpus is sufficient
+                let withdrawal = 0;
+                let status = 'Insufficient';
+                
+                if (remainingCorpus >= annualExpenses) {
+                    withdrawal = annualExpenses;
+                    remainingCorpus -= annualExpenses;
                     
-                    // Subtract annual expenses
-                    remainingCorpus = remainingCorpus - currentAnnualExpenses;
+                    // Grow remaining corpus
+                    remainingCorpus *= (1 + expectedReturn);
                     
-                    if (remainingCorpus >= 0) {
-                        yearsCorpusLasts = year + 1;
-                    }
-                    
-                    projectionData.push({
-                        age: age,
-                        corpus: Math.max(0, remainingCorpus + currentAnnualExpenses),
-                        expenses: currentAnnualExpenses,
-                        withdrawal: currentAnnualExpenses,
-                        remaining: Math.max(0, remainingCorpus),
-                        status: remainingCorpus >= 0 ? 'Sufficient' : 'Deficit'
-                    });
-                } else {
-                    projectionData.push({
-                        age: age,
-                        corpus: 0,
-                        expenses: currentAnnualExpenses,
-                        withdrawal: 0,
-                        remaining: 0,
-                        status: 'Deficit'
-                    });
+                    yearsCorpusLasts++;
+                    status = 'Sufficient';
+                }
+                
+                // Add row to table
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>${age}</td>
+                    <td>${formatCurrency(Math.round(corpusBeforeWithdrawal))}</td>
+                    <td>${formatCurrency(Math.round(annualExpenses))}</td>
+                    <td>${formatCurrency(Math.round(withdrawal))}</td>
+                    <td>${formatCurrency(Math.round(Math.max(0, remainingCorpus)))}</td>
+                    <td><span class="status-${status.toLowerCase()}">${status}</span></td>
+                `;
+
+                // Increase expenses for next year due to inflation
+                currentAnnualExpenses *= (1 + inflationRate);
+                
+                // If corpus is exhausted, break
+                if (remainingCorpus <= 0) {
+                    break;
                 }
             }
-            
-            // Display results
-            displayResults(totalCorpusAtRetirement, expensesAtRetirement, yearsCorpusLasts, retirementYears, projectionData);
+
+            // Update corpus will last
+            document.getElementById('corpusWillLast').textContent = yearsCorpusLasts + ' Years';
         }
 
-        function displayResults(corpus, expenses, yearsLast, totalYears, projectionData) {
-            const resultsDiv = document.getElementById('results');
-            const shortfall = yearsLast < totalYears;
-            
-            let html = `
-                <div class="result-card">
-                    <div class="result-value">${formatCurrency(corpus)}</div>
-                    <div class="result-label">Corpus at Retirement</div>
-                </div>
-                
-                <div class="result-card">
-                    <div class="result-value">${formatCurrency(expenses)}</div>
-                    <div class="result-label">First Year Expenses</div>
-                </div>
-                
-                <div class="result-card">
-                    <div class="result-value ${shortfall ? 'negative' : 'positive'}">${yearsLast} Years</div>
-                    <div class="result-label">Corpus Will Last</div>
-                </div>
-                
-                <div class="result-card">
-                    <div class="result-value">${totalYears} Years</div>
-                    <div class="result-label">Total Retirement Years</div>
-                </div>
-            `;
-            
-            if (shortfall) {
-                const shortfallYears = totalYears - yearsLast;
-                html += `
-                    <div class="warning">
-                        ⚠️ <strong>Warning:</strong> Your corpus may not last through retirement. 
-                        Consider increasing your monthly investments or reducing expected expenses.
-                        Shortfall: ${shortfallYears} years
-                    </div>
-                `;
-            }
-            
-            resultsDiv.innerHTML = html;
-            
-            // Display projection table
-            displayProjectionTable(projectionData);
-        }
+        // Calculate on page load
+        window.onload = function() {
+            calculatePlan();
+        };
 
-        function displayProjectionTable(data) {
-            const tableBody = document.getElementById('projectionBody');
-            const table = document.getElementById('projectionTable');
-            
-            let html = '';
-            data.forEach(row => {
-                html += `
-                    <tr>
-                        <td>${row.age}</td>
-                        <td>${formatCurrency(row.corpus)}</td>
-                        <td>${formatCurrency(row.expenses)}</td>
-                        <td>${formatCurrency(row.withdrawal)}</td>
-                        <td class="${row.remaining > 0 ? 'positive' : 'negative'}">${formatCurrency(row.remaining)}</td>
-                        <td class="${row.status === 'Sufficient' ? 'positive' : 'negative'}">${row.status}</td>
-                    </tr>
-                `;
-            });
-            
-            tableBody.innerHTML = html;
-            table.style.display = 'block';
-        }
-
-        // Calculate on page load with default values
-        calculateFinancialPlan();
+        // Add event listeners for real-time calculation
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', calculatePlan);
+        });
     </script>
 </body>
 </html>
