@@ -171,6 +171,19 @@
             font-weight: 600;
         }
 
+        .chart-container {
+            margin: 25px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #corpusChart {
+            width: 100% !important;
+            height: 400px !important;
+        }
+
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
@@ -270,6 +283,10 @@
                 </div>
             </div>
 
+            <div class="chart-container">
+                <canvas id="corpusChart" width="800" height="400"></canvas>
+            </div>
+
             <div class="table-container">
                 <table id="projectionTable">
                     <thead>
@@ -289,9 +306,120 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script>
         function formatCurrency(amount) {
             return '₹' + amount.toLocaleString('en-IN');
+        }
+
+        let corpusChart = null;
+
+        function createCorpusChart(labels, corpusData, expensesData, withdrawalData) {
+            const ctx = document.getElementById('corpusChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (corpusChart) {
+                corpusChart.destroy();
+            }
+
+            corpusChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Corpus Remaining',
+                        data: corpusData,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Annual Expenses',
+                        data: expensesData,
+                        borderColor: '#ff6b6b',
+                        backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4
+                    }, {
+                        label: 'Annual Withdrawal',
+                        data: withdrawalData,
+                        borderColor: '#feca57',
+                        backgroundColor: 'rgba(254, 202, 87, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Corpus Depletion Over Time',
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            color: '#2d3748'
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Age',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Amount (₹)',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + (value / 10000000).toFixed(1) + 'Cr';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    hover: {
+                        animationDuration: 300
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
         }
 
         function calculatePlan() {
@@ -343,6 +471,12 @@
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = '';
 
+            // Arrays for chart data
+            const chartLabels = [];
+            const chartCorpusData = [];
+            const chartExpensesData = [];
+            const chartWithdrawalData = [];
+
             for (let year = 0; year < totalRetirementYears; year++) {
                 const age = retirementAge + year;
                 
@@ -351,6 +485,11 @@
                 
                 // Annual expenses for this year
                 const annualExpenses = currentAnnualExpenses;
+                
+                // Add data to chart arrays
+                chartLabels.push(age);
+                chartCorpusData.push(Math.round(corpusBeforeWithdrawal));
+                chartExpensesData.push(Math.round(annualExpenses));
                 
                 // Check if corpus is sufficient
                 let withdrawal = 0;
@@ -366,6 +505,8 @@
                     yearsCorpusLasts++;
                     status = 'Sufficient';
                 }
+                
+                chartWithdrawalData.push(Math.round(withdrawal));
                 
                 // Add row to table
                 const row = tableBody.insertRow();
@@ -386,6 +527,9 @@
                     break;
                 }
             }
+
+            // Create the chart
+            createCorpusChart(chartLabels, chartCorpusData, chartExpensesData, chartWithdrawalData);
 
             // Update corpus will last
             document.getElementById('corpusWillLast').textContent = yearsCorpusLasts + ' Years';
